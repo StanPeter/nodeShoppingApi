@@ -1,16 +1,14 @@
 [
     {
-        "id": "123245",
-        "title": "A Book",
-        "imageUrl": "https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg",
-        "description": "This is an awesome book!",
-        "price": "19"
+        "title": "Yoda",
+        "imageUrl": "https://cdn.xsd.cz/resize/2d8496adf6993dff9337974943d005df_resize=680,383_.jpg",
+        "description": "Just an amazing character",
+        "price": "80"
     },
     {
-        "id": "0.41607315815753076",
-        "title": "fasfd",
-        "imageUrl": "fdasfs",
-        "description": "fadsfads",
-        "price": "12"
+        "title": "Anakin",
+        "imageUrl": "https://lumiere-a.akamaihd.net/v1/images/Anakin-Skywalker_d3330724.jpeg",
+        "description": "Not bad at all",
+        "price": "50"
     }
 ]
