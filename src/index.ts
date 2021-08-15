@@ -8,8 +8,11 @@ import shopRoutes from "routes/shop";
 import errorController from "controllers/error";
 //mockData
 import products from "data/products.json";
+import users from "data/users.json";
 //models
 import Product from "models/product";
+//@ts-ignore
+import User from "models/user";
 
 //load enviroment variables
 dotenv.config();
@@ -33,11 +36,20 @@ app.use("/admin", adminRoutes); //with pre-index /admin
 app.use(shopRoutes);
 app.use(errorController);
 
+// relations within DB tables
+Product.belongsTo(User, {
+    constraints: true,
+    onDelete: "CASCADE",
+    foreignKey: "userId",
+});
+User.hasMany(Product, { foreignKey: "userId" });
+
 //self calling method to run server
 (async () => {
     try {
         await sequelize.sync({ force: true });
 
+        users.forEach((user) => User.create(user));
         products.forEach((product) => Product.create(product));
 
         app.listen(port, () => console.log("Listening on " + port));

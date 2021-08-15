@@ -1,5 +1,5 @@
-import Product from "models/product";
 import { Request, Response } from "express";
+import Product from "models/product";
 
 export const getAddProduct = (_req: Request, res: Response) => {
     res.render("admin/edit-product", {
@@ -14,13 +14,13 @@ export const postAddProduct = async (req: Request, res: Response) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-
+    
     try {
         await Product.create({
             title,
             price,
             imageUrl,
-            description,
+            description
         });
 
         res.redirect("/");
