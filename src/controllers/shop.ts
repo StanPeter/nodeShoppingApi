@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
-exports.getProducts = async (
+export const getProducts = async (
     _req: Request,
     res: Response,
     _next: NextFunction
@@ -17,9 +17,13 @@ exports.getProducts = async (
     });
 };
 
-exports.getProduct = (req: Request, res: Response, _next: NextFunction) => {
+export const getProduct = (
+    req: Request,
+    res: Response,
+    _next: NextFunction
+) => {
     const prodId = req.params.productId;
-    Product.findById(prodId)
+    Product.findByPk(prodId)
         .then((product: any) => {
             res.render("shop/product-detail", {
                 product: product,
@@ -30,13 +34,11 @@ exports.getProduct = (req: Request, res: Response, _next: NextFunction) => {
         .catch((err: string) => console.log(err));
 };
 
-exports.getIndex = async (
+export const getIndex = async (
     _req: Request,
     res: Response,
     _next: NextFunction
 ) => {
-    console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
     const products = await Product.findAll();
 
     res.render("shop/index", {
@@ -46,7 +48,11 @@ exports.getIndex = async (
     });
 };
 
-exports.getCart = async (_req: Request, res: Response, _next: NextFunction) => {
+export const getCart = async (
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+) => {
     const products = await Product.findAll();
 
     Cart.getCart((cart: any) => {
@@ -72,34 +78,42 @@ exports.getCart = async (_req: Request, res: Response, _next: NextFunction) => {
     });
 };
 
-exports.postCart = (req: Request, res: Response, _next: NextFunction) => {
+export const postCart = (req: Request, res: Response, _next: NextFunction) => {
     const prodId = req.body.productId;
-    Product.findById(prodId, (product: any) => {
+    Product.findByPk(prodId, (product: any) => {
         Cart.addProduct(prodId, product.price);
     });
     res.redirect("/cart");
 };
 
-exports.postCartDeleteProduct = (
+export const postCartDeleteProduct = (
     req: Request,
     res: Response,
     _next: NextFunction
 ) => {
     const prodId = req.body.productId;
-    Product.findById(prodId, (product: any) => {
+    Product.findByPk(prodId, (product: any) => {
         Cart.deleteProduct(prodId, product.price);
         res.redirect("/cart");
     });
 };
 
-exports.getOrders = (_req: Request, res: Response, _next: NextFunction) => {
+export const getOrders = (
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+) => {
     res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",
     });
 };
 
-exports.getCheckout = (_req: Request, res: Response, _next: NextFunction) => {
+export const getCheckout = (
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+) => {
     res.render("shop/checkout", {
         path: "/checkout",
         pageTitle: "Checkout",

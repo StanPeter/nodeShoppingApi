@@ -1,33 +1,30 @@
 import express from "express";
 import bodyParser from "body-parser";
-
-const path = require("path");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const sequelize = require("./util/database");
-// const errorController = require("./controllers/error");
+import sequelize from "util/database";
+import path from "path";
+//routes
+import adminRoutes from "routes/admin";
+import shopRoutes from "routes/shop";
+import errorController from "controllers/error";
 
 const app = express();
 
-app.set("views", path.join(__dirname, "views"));
+//engine is in ejs || pug || mustache
 app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRoutes);
+//looks at requests where the Content-Type: application/json header is present and transforms the text-based JSON input into JS-accessible variables under req.body
+app.use(bodyParser.urlencoded({ extended: true })); //extended: true precises that the req.body object will contain values of any type instead of just strings.
+
+//routes
+app.use("/admin", adminRoutes); //with pre-index /admin
 app.use(shopRoutes);
-
-app.get("/works", (_req, res) => {
-    console.log(res.statusCode, "afasfafsa");
-
-    res.render("index");
-});
-
-// app.use(errorController.get404);
+app.use(errorController);
 
 sequelize
-    .sync({ force: true })
+    .sync({ force: true }) //overwrites all the tables in DB (so turn off in production!)
     .then((_result: any) => {
         app.listen(3000);
     })

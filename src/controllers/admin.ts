@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 import { Request, Response } from "express";
 
-exports.getAddProduct = (_req: Request, res: Response) => {
+export const getAddProduct = (_req: Request, res: Response) => {
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
@@ -9,7 +9,7 @@ exports.getAddProduct = (_req: Request, res: Response) => {
     });
 };
 
-exports.postAddProduct = (req: Request, res: Response) => {
+export const postAddProduct = (req: Request, res: Response) => {
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
@@ -23,13 +23,13 @@ exports.postAddProduct = (req: Request, res: Response) => {
         .catch((err: string) => console.log(err));
 };
 
-exports.getEditProduct = (req: Request, res: Response) => {
+export const getEditProduct = (req: Request, res: Response) => {
     const editMode = req.query.edit;
     if (!editMode) {
         return res.redirect("/");
     }
     const prodId = req.params.productId;
-    Product.findById(prodId, (product: any) => {
+    Product.findByPk(prodId, (product: any) => {
         if (!product) {
             return res.redirect("/");
         }
@@ -42,7 +42,7 @@ exports.getEditProduct = (req: Request, res: Response) => {
     });
 };
 
-exports.postEditProduct = (req: Request, res: Response) => {
+export const postEditProduct = (req: Request, res: Response) => {
     const prodId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
@@ -59,7 +59,7 @@ exports.postEditProduct = (req: Request, res: Response) => {
     res.redirect("/admin/products");
 };
 
-exports.getProducts = async (_req: Request, res: Response) => {
+export const getProducts = async (_req: Request, res: Response) => {
     const products = await Product.findAll();
 
     res.render("admin/products", {
@@ -69,7 +69,7 @@ exports.getProducts = async (_req: Request, res: Response) => {
     });
 };
 
-exports.postDeleteProduct = (req: Request, res: Response) => {
+export const postDeleteProduct = (req: Request, res: Response) => {
     const prodId = req.body.productId;
     Product.deleteById(prodId);
     res.redirect("/admin/products");

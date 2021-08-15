@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-complete-guide",
+  "name": "Base nodeJs",
   "version": "1.0.0",
-  "description": "Complete Node.js Guide",
+  "description": "Base for restful api - Node",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -11,7 +11,7 @@
     "start": "NODE_PATH=./src nodemon --exec ts-node src/index.ts",
     "start-server": "node index.js"
   },
-  "author": "Maximilian Schwarzmüller",
+  "author": "StanPeter",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.13",
@@ -27,7 +27,6 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "mysql2": "^2.3.0",
-    "pug": "^3.0.2",
     "sequelize": "^6.6.5"
   }
 }
