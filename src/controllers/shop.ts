@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-const Product = require("../models/product");
+import Product from "models/product";
 const Cart = require("../models/cart");
 
 export const getProducts = async (
@@ -78,24 +78,34 @@ export const getCart = async (
     });
 };
 
-export const postCart = (req: Request, res: Response, _next: NextFunction) => {
-    const prodId = req.body.productId;
-    Product.findByPk(prodId, (product: any) => {
-        Cart.addProduct(prodId, product.price);
-    });
-    res.redirect("/cart");
-};
-
-export const postCartDeleteProduct = (
+export const postCart = async (
     req: Request,
     res: Response,
     _next: NextFunction
 ) => {
-    const prodId = req.body.productId;
-    Product.findByPk(prodId, (product: any) => {
-        Cart.deleteProduct(prodId, product.price);
-        res.redirect("/cart");
-    });
+    const product = await Product.findByPk(req.body.productId);
+
+    if (!product) throw new Error("No product was found");
+
+    //@ts-ignore
+    Cart.addProduct(req.body.productId, product.price);
+
+    res.redirect("/cart");
+};
+
+export const postCartDeleteProduct = async (
+    req: Request,
+    res: Response,
+    _next: NextFunction
+) => {
+    const product = await Product.findByPk(req.body.productId);
+
+    if (!product) throw new Error("No product was found");
+
+    //@ts-ignore
+    Cart.deleteProduct(prodId, product.price);
+
+    res.redirect("/cart");
 };
 
 export const getOrders = (

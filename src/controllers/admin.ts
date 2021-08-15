@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+import Product from "models/product";
 import { Request, Response } from "express";
 
 export const getAddProduct = (_req: Request, res: Response) => {
@@ -9,54 +9,71 @@ export const getAddProduct = (_req: Request, res: Response) => {
     });
 };
 
-export const postAddProduct = (req: Request, res: Response) => {
+export const postAddProduct = async (req: Request, res: Response) => {
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const product = new Product(null, title, imageUrl, description, price);
-    product
-        .save()
-        .then(() => {
-            res.redirect("/");
-        })
-        .catch((err: string) => console.log(err));
+
+    try {
+        await Product.create({
+            title,
+            price,
+            imageUrl,
+            description,
+        });
+
+        res.redirect("/");
+    } catch (e) {
+        console.log(e, "error");
+        throw new Error(e);
+    }
 };
 
-export const getEditProduct = (req: Request, res: Response) => {
+export const getEditProduct = async (req: Request, res: Response) => {
     const editMode = req.query.edit;
     if (!editMode) {
+        console.log("Edit mode not passed!");
         return res.redirect("/");
     }
-    const prodId = req.params.productId;
-    Product.findByPk(prodId, (product: any) => {
-        if (!product) {
-            return res.redirect("/");
-        }
-        res.render("admin/edit-product", {
-            pageTitle: "Edit Product",
-            path: "/admin/edit-product",
-            editing: editMode,
-            product: product,
-        });
+
+    const product = await Product.findByPk(req.params.productId);
+
+    if (!product) throw new Error("No product was found");
+
+    res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
     });
 };
 
-export const postEditProduct = (req: Request, res: Response) => {
+export const postEditProduct = async (req: Request, res: Response) => {
     const prodId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDesc = req.body.description;
-    const updatedProduct = new Product(
-        prodId,
-        updatedTitle,
-        updatedImageUrl,
-        updatedDesc,
-        updatedPrice
-    );
-    updatedProduct.save();
-    res.redirect("/admin/products");
+
+    const updatedProduct = await Product.findByPk(prodId);
+
+    if (!updatedProduct) throw new Error("Product was not found");
+
+    try {
+        await updatedProduct.update({
+            title: updatedTitle,
+            price: updatedPrice,
+            imageUrl: updatedImageUrl,
+            description: updatedDesc,
+        });
+
+        console.log("success");
+        res.redirect("/admin/products");
+    } catch (e) {
+        console.log(e, "error");
+        throw new Error("Unfortunately product coud not be updated");
+    }
 };
 
 export const getProducts = async (_req: Request, res: Response) => {
@@ -69,8 +86,15 @@ export const getProducts = async (_req: Request, res: Response) => {
     });
 };
 
-export const postDeleteProduct = (req: Request, res: Response) => {
+export const postDeleteProduct = async (req: Request, res: Response) => {
     const prodId = req.body.productId;
-    Product.deleteById(prodId);
-    res.redirect("/admin/products");
+
+    try {
+        await Product.destroy({ where: { prodId } });
+
+        res.redirect("/admin/products");
+    } catch (e) {
+        console.log(e, "error");
+        throw new Error(e);
+    }
 };
