@@ -87,10 +87,10 @@ export const getProducts = async (_req: Request, res: Response) => {
 };
 
 export const postDeleteProduct = async (req: Request, res: Response) => {
-    const prodId = req.body.productId;
+    const id = req.body.productId;
 
     try {
-        await Product.destroy({ where: { prodId } });
+        await Product.destroy({ where: { id } });
 
         res.redirect("/admin/products");
     } catch (e) {

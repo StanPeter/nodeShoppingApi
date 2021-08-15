@@ -87,8 +87,7 @@ export const postCart = async (
 
     if (!product) throw new Error("No product was found");
 
-    //@ts-ignore
-    Cart.addProduct(req.body.productId, product.price);
+    Cart.addProduct(req.body.productId, product._attributes.price);
 
     res.redirect("/cart");
 };
@@ -102,8 +101,7 @@ export const postCartDeleteProduct = async (
 
     if (!product) throw new Error("No product was found");
 
-    //@ts-ignore
-    Cart.deleteProduct(prodId, product.price);
+    Cart.deleteProduct(req.body.productId, product._attributes.price);
 
     res.redirect("/cart");
 };
