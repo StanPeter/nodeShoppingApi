@@ -34,20 +34,6 @@ export const getProduct = (
         .catch((err: string) => console.log(err));
 };
 
-export const getIndex = async (
-    _req: Request,
-    res: Response,
-    _next: NextFunction
-) => {
-    const products = await Product.findAll();
-
-    res.render("shop/index", {
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-    });
-};
-
 export const getCart = async (
     _req: Request,
     res: Response,

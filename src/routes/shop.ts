@@ -3,7 +3,6 @@ import express from "express";
 import {
     getCart,
     getCheckout,
-    getIndex,
     getOrders,
     getProduct,
     getProducts,
@@ -13,7 +12,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getIndex);
+router.get("/", getProducts);
 
 router.get("/products", getProducts);
 
@@ -26,6 +25,8 @@ router.post("/cart", postCart);
 router.post("/cart-delete-item", postCartDeleteProduct);
 
 router.get("/orders", getOrders);
+
+// router.post('/create-order', shopController.postOrder);
 
 router.get("/checkout", getCheckout);
 
