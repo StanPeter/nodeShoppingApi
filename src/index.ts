@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import sequelize from "util/database";
+import sequelizeConnection from "util/database";
 import path from "path";
 import dotenv from "dotenv";
 //routes
@@ -63,13 +63,17 @@ Cart.belongsToMany(Product, { through: CartItem, foreignKey: "cartId" });
 //orders
 Order.belongsTo(User, { foreignKey: "userId" });
 User.hasMany(Order, { foreignKey: "userId" });
+
 Order.belongsToMany(Product, { through: OrderItem, foreignKey: "orderId" });
-Product.belongsToMany(Order, { through: OrderItem, foreignKey: "productId" });
+Product.belongsToMany(Order, {
+    through: OrderItem,
+    foreignKey: "productId",
+});
 
 //self calling method to run server
 (async () => {
     try {
-        await sequelize.sync({ force: true });
+        await sequelizeConnection.sync({ force: true });
 
         users.forEach((user) => User.create(user));
         products.forEach((product) => Product.create(product));

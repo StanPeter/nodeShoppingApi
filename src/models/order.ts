@@ -4,7 +4,7 @@ import sequelizeConnection from "util/database";
 //parameters are visible in auto-completing
 interface orderAttributes {
     id: number;
-    amount: number
+    amount: number;
 }
 
 export default class orderInstance extends Model<orderAttributes> {}
