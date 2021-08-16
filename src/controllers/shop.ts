@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+//models
+import Product, { ProductAttributes } from "models/product";
+import Cart, { cartAttributes } from "models/cart";
+import User from "models/user";
 
-import Product from "models/product";
-const Cart = require("../models/cart");
+interface GetCartInterface extends cartAttributes, ProductAttributes {}
 
 export const getProducts = async (
     _req: Request,
@@ -39,28 +42,25 @@ export const getCart = async (
     res: Response,
     _next: NextFunction
 ) => {
-    const products = await Product.findAll();
+    //normally would come from req.user for example
+    const cart = await Cart.findAll({ where: { userId: 1 } });
+    let dataOut: Array<GetCartInterface> = [];
 
-    Cart.getCart((cart: any) => {
-        const cartProducts: any = [];
-        products.forEach((product: any) => {
-            const cartProductData = cart.products.find(
-                (prod: any) => prod.id === product.id
-            );
+    cart.forEach(async (item) => {
+        const foundProduct = await Product.findByPk(
+            item.getDataValue("productId")
+        );
 
-            if (cartProductData) {
-                cartProducts.push({
-                    productData: product,
-                    qty: cartProductData.qty,
-                });
-            }
-        });
+        const cartValues = item.get();
+        const productValues = foundProduct!.get();
 
-        res.render("shop/cart", {
-            path: "/cart",
-            pageTitle: "Your Cart",
-            products: cartProducts,
-        });
+        dataOut.push({ ...cartValues, ...productValues });
+    });
+
+    res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        products: dataOut,
     });
 };
 
@@ -69,11 +69,15 @@ export const postCart = async (
     res: Response,
     _next: NextFunction
 ) => {
-    const product = await Product.findByPk(req.body.productId);
-
-    if (!product) throw new Error("No product was found");
-
-    Cart.addProduct(req.body.productId, product._attributes.price);
+    try {
+        await Cart.create({
+            amount: 1,
+            userId: 1,
+            productId: 1,
+        });
+    } catch (e) {
+        console.log(e, "error");
+    }
 
     res.redirect("/cart");
 };
@@ -87,7 +91,7 @@ export const postCartDeleteProduct = async (
 
     if (!product) throw new Error("No product was found");
 
-    Cart.deleteProduct(req.body.productId, product._attributes.price);
+    // Cart.deleteProduct(req.body.productId, product._attributes.price);
 
     res.redirect("/cart");
 };

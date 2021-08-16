@@ -11,11 +11,9 @@ import products from "data/products.json";
 import users from "data/users.json";
 //models
 import Product from "models/product";
-import CartItem from "models/cartItem";
 import Cart from "models/cart";
 import User from "models/user";
 import Order from "models/order";
-import OrderItem from "models/orderItem";
 
 //load enviroment variables
 dotenv.config();
@@ -39,6 +37,7 @@ app.use("/admin", adminRoutes); //with pre-index /admin
 app.use(shopRoutes);
 app.use(errorController);
 
+/*
 // relations
 //product should have userId column
 Product.belongsTo(User, {
@@ -69,6 +68,7 @@ Product.belongsToMany(Order, {
     through: OrderItem,
     foreignKey: "productId",
 });
+*/
 
 //self calling method to run server
 (async () => {

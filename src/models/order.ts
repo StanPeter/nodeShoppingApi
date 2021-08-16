@@ -4,6 +4,9 @@ import sequelizeConnection from "util/database";
 //parameters are visible in auto-completing
 interface orderAttributes {
     id: number;
+    userId: number;
+    productId: number;
+    orderId: number;
     amount: number;
 }
 
@@ -16,6 +19,15 @@ orderInstance.init(
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
+        },
+        userId: {
+            type: Sequelize.INTEGER,
+        },
+        productId: {
+            type: Sequelize.INTEGER,
+        },
+        orderId: {
+            type: Sequelize.INTEGER,
         },
         amount: {
             type: Sequelize.INTEGER,

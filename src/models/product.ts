@@ -2,9 +2,8 @@ import Sequelize, { Model } from "sequelize";
 import sequelizeConnection from "util/database";
 
 //parameters are visible in auto-completing
-interface ProductAttributes {
+export interface ProductAttributes {
     id?: number;
-    userId?: number | string;
     title: string;
     price: number | string;
     imageUrl?: string;
@@ -20,10 +19,6 @@ ProductInstance.init(
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
-        },
-        userId: {
-            type: Sequelize.INTEGER,
-            defaultValue: 1,
         },
         title: {
             type: Sequelize.STRING,
