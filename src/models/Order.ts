@@ -2,7 +2,7 @@ import Sequelize, { Model } from "sequelize";
 import sequelizeConnection from "util/database";
 
 //parameters are visible in auto-completing
-interface orderAttributes {
+interface OrderAttributes {
     id: number;
     userId: number;
     productId: number;
@@ -10,9 +10,9 @@ interface orderAttributes {
     amount: number;
 }
 
-export default class orderInstance extends Model<orderAttributes> {}
+export default class Order extends Model<OrderAttributes> {}
 
-orderInstance.init(
+Order.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -36,6 +36,6 @@ orderInstance.init(
     },
     {
         sequelize: sequelizeConnection,
-        tableName: "orders",
+        tableName: "Orders",
     }
 );

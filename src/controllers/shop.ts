@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 //models
-import Product, { ProductAttributes } from "models/product";
-import Cart, { cartAttributes } from "models/cart";
-import User from "models/user";
+import Product from "models/Product";
+import Cart from "models/Cart";
+import User from "models/User";
 
-interface GetCartInterface extends cartAttributes, ProductAttributes {}
+interface GetCardResponse {
+    amount: number;
+    title: String;
+    id?: number;
+}
 
 export const getProducts = async (
     _req: Request,
@@ -42,26 +46,36 @@ export const getCart = async (
     res: Response,
     _next: NextFunction
 ) => {
-    //normally would come from req.user for example
-    const cart = await Cart.findAll({ where: { userId: 1 } });
-    let dataOut: Array<GetCartInterface> = [];
+    try {
+        const user = await User.findByPk(1);
+        if (!user) throw new Error("No user was found");
 
-    cart.forEach(async (item) => {
-        const foundProduct = await Product.findByPk(
-            item.getDataValue("productId")
-        );
+        let response: Array<GetCardResponse> = [];
 
-        const cartValues = item.get();
-        const productValues = foundProduct!.get();
+        const carts = await user.getCarts();
 
-        dataOut.push({ ...cartValues, ...productValues });
-    });
+        for (const cart of carts) {
+            const foundProduct = await Product.findByPk(cart.productId);
 
-    res.render("shop/cart", {
-        path: "/cart",
-        pageTitle: "Your Cart",
-        products: dataOut,
-    });
+            console.log(cart.productId, cart.amount);
+            console.log(cart.get());
+            console.log(cart.toJSON());
+            response.push({
+                amount: cart.amount,
+                title: foundProduct!.getDataValue("title"),
+                id: foundProduct!.getDataValue("id"),
+            });
+        }
+
+        res.render("shop/cart", {
+            path: "/cart",
+            pageTitle: "Your Cart",
+            products: response,
+        });
+    } catch (e) {
+        console.log(e, "error");
+        throw new Error(e);
+    }
 };
 
 export const postCart = async (
@@ -79,7 +93,7 @@ export const postCart = async (
         console.log(e, "error");
     }
 
-    res.redirect("/cart");
+    // res.redirect("/cart");
 };
 
 export const postCartDeleteProduct = async (

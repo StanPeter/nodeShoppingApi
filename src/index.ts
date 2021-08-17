@@ -10,10 +10,10 @@ import errorController from "controllers/error";
 import products from "data/products.json";
 import users from "data/users.json";
 //models
-import Product from "models/product";
-import Cart from "models/cart";
-import User from "models/user";
-import Order from "models/order";
+import Product from "models/Product";
+import Cart from "models/Cart";
+import User from "models/User";
+import Order from "models/Order";
 
 //load enviroment variables
 dotenv.config();
@@ -37,38 +37,18 @@ app.use("/admin", adminRoutes); //with pre-index /admin
 app.use(shopRoutes);
 app.use(errorController);
 
-/*
 // relations
-//product should have userId column
-Product.belongsTo(User, {
-    constraints: true,
-    onDelete: "CASCADE",
-    foreignKey: "userId",
+User.hasMany(Cart, { foreignKey: "userId" });
+Cart.belongsTo(User, { foreignKey: "userId" });
+
+Cart.belongsToMany(Product, {
+    through: "CartProduct",
+    foreignKey: 'cartId'
 });
-User.hasMany(Product, { foreignKey: "userId" });
-
-//cart should have userId column as it belongs to User
-Cart.belongsTo(User, {
-    constraints: true,
-    onDelete: "CASCADE",
-    foreignKey: "userId",
+Product.belongsToMany(Cart, {
+    through: "CartProduct",
+    foreignKey: 'productId'
 });
-User.hasOne(Cart, { foreignKey: "userId" });
-
-//joins
-Product.belongsToMany(Cart, { through: CartItem, foreignKey: "productId" });
-Cart.belongsToMany(Product, { through: CartItem, foreignKey: "cartId" });
-
-//orders
-Order.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Order, { foreignKey: "userId" });
-
-Order.belongsToMany(Product, { through: OrderItem, foreignKey: "orderId" });
-Product.belongsToMany(Order, {
-    through: OrderItem,
-    foreignKey: "productId",
-});
-*/
 
 //self calling method to run server
 (async () => {
@@ -77,6 +57,18 @@ Product.belongsToMany(Order, {
 
         users.forEach((user) => User.create(user));
         products.forEach((product) => Product.create(product));
+
+        Cart.create({
+            amount: 1,
+            userId: 1,
+            productId: 1,
+        });
+
+        Cart.create({
+            amount: 2,
+            userId: 1,
+            productId: 3,
+        });
 
         app.listen(port, () => console.log("Listening on " + port));
     } catch (e) {

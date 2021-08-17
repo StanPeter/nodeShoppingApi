@@ -2,16 +2,17 @@ import Sequelize, { Model } from "sequelize";
 import sequelizeConnection from "util/database";
 
 //parameters are visible in auto-completing
-interface UserAttributes {
+export interface ProductAttributes {
     id?: number;
-    userName: string;
-    email: string;
-    password?: string;
+    title: string;
+    price: number | string;
+    imageUrl?: string;
+    description?: string;
 }
 
-export default class UserInstance extends Model<UserAttributes> {}
+export default class Product extends Model<ProductAttributes> {}
 
-UserInstance.init(
+Product.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -19,21 +20,25 @@ UserInstance.init(
             allowNull: false,
             primaryKey: true,
         },
-        userName: {
+        title: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        email: {
-            type: Sequelize.STRING,
+        price: {
+            type: Sequelize.DOUBLE,
             allowNull: false,
         },
-        password: {
+        imageUrl: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
+        },
+        description: {
+            type: Sequelize.STRING,
+            allowNull: true,
         },
     },
     {
         sequelize: sequelizeConnection,
-        tableName: "users",
+        tableName: "Products",
     }
 );
