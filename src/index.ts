@@ -41,14 +41,8 @@ app.use(errorController);
 User.hasMany(Cart, { foreignKey: "userId" });
 Cart.belongsTo(User, { foreignKey: "userId" });
 
-Cart.belongsToMany(Product, {
-    through: "CartProduct",
-    foreignKey: 'cartId'
-});
-Product.belongsToMany(Cart, {
-    through: "CartProduct",
-    foreignKey: 'productId'
-});
+User.hasMany(Order, { foreignKey: "userId" });
+Order.belongsTo(User, { foreignKey: "userId" });
 
 //self calling method to run server
 (async () => {
@@ -68,6 +62,27 @@ Product.belongsToMany(Cart, {
             amount: 2,
             userId: 1,
             productId: 3,
+        });
+
+        Order.create({
+            amount: 2,
+            productId: 1,
+            userId: 1,
+            orderId: 1,
+        });
+
+        Order.create({
+            amount: 3,
+            productId: 3,
+            userId: 1,
+            orderId: 1,
+        });
+
+        Order.create({
+            amount: 1,
+            productId: 2,
+            userId: 1,
+            orderId: 2,
         });
 
         app.listen(port, () => console.log("Listening on " + port));

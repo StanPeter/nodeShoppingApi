@@ -20,6 +20,7 @@ import Sequelize, {
 import sequelizeConnection from "util/database";
 //models
 import Cart from "models/Cart";
+import Order from "./Order";
 
 //parameters are visible in auto-completing under User._attributes()
 interface UserAttributes {
@@ -43,22 +44,25 @@ export default class User extends Model<UserAttributes> {
     // these will not exist until `Model.init` was called.
     // methods created by associations
     public getCarts!: HasManyGetAssociationsMixin<Cart>; // Note the null assertions!
-    public countCarts!: HasManyCountAssociationsMixin;
-    public hasCart!: HasManyHasAssociationMixin<Cart, number>;
-    public hasCarts!: HasManyHasAssociationsMixin<Cart, Array<Cart>>;
+    public getOrders!: HasManyGetAssociationsMixin<Order>; // Note the null assertions!
+    // public countCarts!: HasManyCountAssociationsMixin;
+    // public hasCart!: HasManyHasAssociationMixin<Cart, number>;
+    // public hasCarts!: HasManyHasAssociationsMixin<Cart, Array<Cart>>;
     // public setCarts!: HasOneSetAssociationMixinOptions<Cart, number>;
-    public addCart!: HasManyAddAssociationMixin<Cart, number>;
-    public addCarts!: HasManyAddAssociationsMixin<Cart, number>;
-    public createCart!: HasManyCreateAssociationMixin<Cart>;
-    public removeCart!: HasManyRemoveAssociationMixin<Cart, number>;
-    public removeCarts!: HasManyRemoveAssociationsMixin<Cart, number>;
+    // public addCart!: HasManyAddAssociationMixin<Cart, number>;
+    // public addCarts!: HasManyAddAssociationsMixin<Cart, number>;
+    // public createCart!: HasManyCreateAssociationMixin<Cart>;
+    // public removeCart!: HasManyRemoveAssociationMixin<Cart, number>;
+    // public removeCarts!: HasManyRemoveAssociationsMixin<Cart, number>;
 
     // You can also pre-declare possible inclusions, these will only be populated if you
     // actively include a relation.
     public readonly carts?: Cart[];
+    public readonly orders?: Order[];
 
     public static associations: {
         carts: Association<User, Cart>;
+        orders: Association<User, Order>;
     };
 }
 

@@ -3,11 +3,22 @@ import { NextFunction, Request, Response } from "express";
 import Product from "models/Product";
 import Cart from "models/Cart";
 import User from "models/User";
+import Order from "models/Order";
 
 interface GetCardResponse {
     amount: number;
     title: String;
     id?: number;
+}
+
+interface GetOrdersResponse {
+    orderId: number;
+    products: [
+        {
+            title: String;
+            amount: number;
+        }
+    ];
 }
 
 export const getProducts = async (
@@ -57,9 +68,6 @@ export const getCart = async (
         for (const cart of carts) {
             const foundProduct = await Product.findByPk(cart.productId);
 
-            console.log(cart.productId, cart.amount);
-            console.log(cart.get());
-            console.log(cart.toJSON());
             response.push({
                 amount: cart.amount,
                 title: foundProduct!.title,
@@ -113,24 +121,64 @@ export const postCartDeleteProduct = async (
     res: Response,
     _next: NextFunction
 ) => {
-    const product = await Product.findByPk(req.body.productId);
+    const cart = await Cart.findOne({
+        where: { productId: req.body.productId, userId: 1 },
+    });
 
-    if (!product) throw new Error("No product was found");
+    if (!cart) throw new Error("No cart was found");
 
-    // Cart.deleteProduct(req.body.productId, product._attributes.price);
+    cart.destroy();
 
     res.redirect("/cart");
 };
 
-export const getOrders = (
+export const getOrders = async (
     _req: Request,
     res: Response,
     _next: NextFunction
 ) => {
-    res.render("shop/orders", {
-        path: "/orders",
-        pageTitle: "Your Orders",
-    });
+    try {
+        const user = await User.findByPk(1);
+        if (!user) throw new Error("No user was found");
+
+        let response: Array<GetOrdersResponse> = [];
+
+        const orders = await user.getOrders();
+
+        for (const order of orders) {
+            const foundProduct = await Product.findByPk(order.productId);
+
+            const indexOfexistingOrder = response.findIndex(
+                (d) => d.orderId === order.orderId
+            );
+
+            if (indexOfexistingOrder !== -1) {
+                response[indexOfexistingOrder].products.push({
+                    amount: order.amount,
+                    title: foundProduct!.title,
+                });
+            } else {
+                response.push({
+                    orderId: order.orderId,
+                    products: [
+                        {
+                            amount: order.amount,
+                            title: foundProduct!.title,
+                        },
+                    ],
+                });
+            }
+        }
+
+        res.render("shop/orders", {
+            path: "/orders",
+            pageTitle: "Your Orders",
+            orders: response,
+        });
+    } catch (e) {
+        console.log(e, "error");
+        throw new Error(e);
+    }
 };
 
 export const getCheckout = (
