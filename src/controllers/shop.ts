@@ -84,16 +84,28 @@ export const postCart = async (
     _next: NextFunction
 ) => {
     try {
-        await Cart.create({
-            amount: 1,
-            userId: 1,
-            productId: 1,
+        //check whether the same product already exists in user's Cart
+        const existingCart = await Cart.findOne({
+            where: { productId: req.body.productId, userId: 1 },
         });
+
+        if (existingCart) {
+            existingCart.update({
+                // ...existingCart.toJSON(),
+                amount: ++existingCart.amount,
+            });
+        } else {
+            Cart.create({
+                productId: req.body.productId,
+                userId: 1,
+                amount: 1,
+            });
+        }
+
+        res.redirect("/cart");
     } catch (e) {
         console.log(e, "error");
     }
-
-    // res.redirect("/cart");
 };
 
 export const postCartDeleteProduct = async (
