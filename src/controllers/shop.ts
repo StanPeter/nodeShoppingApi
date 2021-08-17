@@ -62,8 +62,8 @@ export const getCart = async (
             console.log(cart.toJSON());
             response.push({
                 amount: cart.amount,
-                title: foundProduct!.getDataValue("title"),
-                id: foundProduct!.getDataValue("id"),
+                title: foundProduct!.title,
+                id: foundProduct!.id,
             });
         }
 

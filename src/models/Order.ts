@@ -3,14 +3,25 @@ import sequelizeConnection from "util/database";
 
 //parameters are visible in auto-completing
 interface OrderAttributes {
-    id: number;
+    id?: number;
     userId: number;
     productId: number;
     orderId: number;
     amount: number;
 }
 
-export default class Order extends Model<OrderAttributes> {}
+export default class Order extends Model<OrderAttributes> {
+    // access fields by User.userName
+    public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public userId!: number;
+    public productId!: number;
+    public orderId!: number;
+    public amount!: number;
+
+    // timestamps!
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
 
 Order.init(
     {

@@ -4,13 +4,24 @@ import sequelizeConnection from "util/database";
 //parameters are visible in auto-completing
 export interface ProductAttributes {
     id?: number;
-    title: string;
-    price: number | string;
-    imageUrl?: string;
-    description?: string;
+    title: String;
+    price: number | String;
+    imageUrl?: String;
+    description?: String;
 }
 
-export default class Product extends Model<ProductAttributes> {}
+export default class Product extends Model<ProductAttributes> {
+    // access fields by User.userName
+    public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public title!: String;
+    public price!: number;
+    public imageUrl!: String;
+    public description!: String;
+
+    // timestamps!
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
 
 Product.init(
     {
