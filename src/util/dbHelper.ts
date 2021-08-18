@@ -23,4 +23,14 @@ export const setRelations = () => {
 
     User.hasMany(Order, { foreignKey: "userId" });
     Order.belongsTo(User, { foreignKey: "userId" });
+
+    //I do these relations manually as I disliked sequelize way of doing it
+    // Product.belongsToMany(Cart, {
+    //     through: "ProductCart",
+    //     foreignKey: "productId",
+    // });
+    // Cart.belongsToMany(Product, {
+    //     through: "ProductCart",
+    //     foreignKey: "cartId",
+    // });
 };

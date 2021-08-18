@@ -25,7 +25,7 @@ export const getProducts = async (
     res: Response,
     _next: NextFunction
 ) => {
-    const products = await Product.findAll();
+    const products = await Product.findAll({ where: { active: true } });
 
     res.render("shop/product-list", {
         prods: products,
@@ -65,6 +65,8 @@ export const getCart = async (
         const carts = await user.getCarts();
 
         for (const cart of carts) {
+            //one way of doing it
+            // const hey = await cart.getProducts();
             const foundProduct = await Product.findByPk(cart.productId);
 
             response.push({

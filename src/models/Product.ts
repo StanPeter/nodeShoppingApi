@@ -8,6 +8,7 @@ export interface ProductAttributes {
     price: number | String;
     imageUrl?: String;
     description?: String;
+    active?: Boolean; //whether its a deleted product or not (in orders we still want to see it even if its deleted!)
 }
 
 export default class Product extends Model<ProductAttributes> {
@@ -17,6 +18,7 @@ export default class Product extends Model<ProductAttributes> {
     public price!: number;
     public imageUrl!: String;
     public description!: String;
+    public active!: Boolean;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -46,6 +48,10 @@ Product.init(
         description: {
             type: Sequelize.STRING,
             allowNull: true,
+        },
+        active: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true,
         },
     },
     {

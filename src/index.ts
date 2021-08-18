@@ -30,13 +30,14 @@ app.use("/admin", adminRoutes); //with pre-index /admin
 app.use(shopRoutes);
 app.use(errorController);
 
+//set relations between tables
+setRelations();
+
 //self calling method to run server
 (async () => {
     try {
         await sequelizeConnection.sync({ force: true });
 
-        //set relations between tables
-        setRelations();
         //populates Tables with data -> sync is set to force: true which deletes them each reloading of the project
         mockDataPopulater();
 
