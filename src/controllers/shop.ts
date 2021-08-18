@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import Product from "models/Product";
 import Cart from "models/Cart";
 import User from "models/User";
-import Order from "models/Order";
 
 interface GetCardResponse {
     amount: number;
@@ -190,4 +189,8 @@ export const getCheckout = (
         path: "/checkout",
         pageTitle: "Checkout",
     });
+};
+
+export const postOrder = async (_req: Request, _res: Response) => {
+    alert("not implemnted yet");
 };
