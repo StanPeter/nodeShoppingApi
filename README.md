@@ -1,0 +1,3 @@
+# nodeShoppingApi
+
+DEPRECATED
